@@ -1,0 +1,17 @@
+FROM maven:3.8.4-openjdk-11-slim AS maven-cache
+WORKDIR /app
+COPY pom.xml .
+COPY tencent.settings.xml /root/.m2/settings.xml
+RUN mvn dependency:go-offline
+RUN mvn help:evaluate -Dexpression=project.plugins -q -DforceStdout
+
+FROM maven-cache AS build
+COPY src ./src
+RUN mvn clean package
+
+FROM openjdk:11-jre-slim
+WORKDIR /app
+COPY --from=build /app/target/count-server-1.0-SNAPSHOT.jar ./app.jar
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "app.jar"]
+CMD ["-Dstorage.type=jdbc", "-Ddb.url=jdbc:mysql://localhost:3306/count", "-Ddb.user=default_user", "-Ddb.password=default_password"]
