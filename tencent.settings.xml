@@ -1,0 +1,10 @@
+<settings>
+  <mirrors>
+    <mirror>
+      <id>nexus-tencentyun</id>
+      <mirrorOf>*</mirrorOf>
+      <name>Nexus tencentyun</name>
+      <url>https://mirrors.tencent.com/nexus/repository/maven-public/</url>
+    </mirror>
+  </mirrors>
+</settings>
