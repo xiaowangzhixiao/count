@@ -28,8 +28,12 @@ COPY --from=build /app/target/count-server-1.0-SNAPSHOT.jar ./app.jar
 # 暴露应用程序端口
 EXPOSE 8080
 
-# 运行应用
-ENTRYPOINT ["java", "-jar", "app.jar"]
 
-# 使用CMD设置默认参数，这些可以在运行容器时被覆盖
-CMD ["-Dstorage.type=jdbc", "-Ddb.url=jdbc:mysql://localhost:3306/count", "-Ddb.user=default_user", "-Ddb.password=default_password"]
+RUN echo '#!/bin/sh\n\
+java -Dstorage.type=${STORAGE_TYPE:-jdbc} \
+     -Ddb.url=${DB_URL:-jdbc:mysql://localhost:3306/count} \
+     -Ddb.user=${DB_USER:-default_user} \
+     -Ddb.password=${DB_PASSWORD:-default_password} \
+     -jar app.jar\n' > /app/start.sh && chmod +x /app/start.sh
+
+ENTRYPOINT ["/app/start.sh"]

@@ -45,6 +45,21 @@ Count Server 是一个基于 Java 的微服务，用于接收和存储指标数�
    ```
    docker build -t count-server .
    ```
+   1.1 使用腾讯镜像
+
+   ```
+   docker build -f Dockerfile.cache -t count-server .
+   ```
+   1.2 使用缓存maven依赖
+   Dockerfile.cache文件
+   使用以下命令构建：
+   ````
+   # 首次构建，创建缓存
+   docker build -f Dockerfile.cache -t maven-cache --target maven-cache .  
+
+   # 后续构建，使用缓存
+   docker build -f Dockerfile.cache --cache-from maven-cache -t count-server .
+   ```
 
 2. 运行 Docker 容器：
 
@@ -53,12 +68,10 @@ Count Server 是一个基于 Java 的微服务，用于接收和存储指标数�
      --name count-server \
      -p 8080:8080 \
      -v /path/on/host/logs:/app/logs \
-     count-server \
-     -Dstorage.type=jdbc \
-     -Ddb.url=jdbc:mysql://host.docker.internal:3306/your_database \
-     -Ddb.user=your_username \
-     -Ddb.password=your_password \
-
+     -e DB_URL=jdbc:mysql://host.docker.internal:3306/your_database \
+     -e DB_USER=your_username \
+     -e DB_PASSWORD=your_password \
+     count-server
    ```
 
    命令说明：
@@ -66,9 +79,9 @@ Count Server 是一个基于 Java 的微服务，用于接收和存储指标数�
    - `--name count-server`: 为容器指定一个名称
    - `-p 8080:8080`: 将容器的 8080 端口映射到主机的 8080 端口
    - `-v /path/on/host/logs:/app/logs`: 将主机上的日志目录挂载到容器中
-   - `-Ddb.url=...`: 设置数据库 URL 
-   - `-Ddb.user=...`: 设置数据库用户名
-   - `-Ddb.password=...`: 设置数据库密码
+   - `-e DB_URL=...`: 设置数据库 URL 环境变量
+   - `-e DB_USER=...`: 设置数据库用户名环境变量
+   - `-e DB_PASSWORD=...`: 设置数据库密码环境变量
 
    注意：
    - 将 `/path/on/host/logs` 替换为你想在主机上存储日志的实际路径
@@ -97,11 +110,10 @@ Count Server 是一个基于 Java 的微服务，用于接收和存储指标数�
      --network count-network \
      -p 8080:8080 \
      -v /path/on/host/logs:/app/logs \
-     count-server \
-     -Dstorage.type=jdbc \
-     -Ddb.url=jdbc:mysql://mysql-container:3306/your_database \
-     -Ddb.user=your_username \
-     -Ddb.password=your_password \
+     -e DB_URL=jdbc:mysql://mysql-container:3306/your_database \
+     -e DB_USER=your_username \
+     -e DB_PASSWORD=your_password \
+     count-server
    ```
 
    这里，`mysql-container` 是你的 MySQL Docker 容器的名称。
