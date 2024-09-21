@@ -14,7 +14,7 @@ RUN mvn dependency:go-offline
 COPY src ./src
 
 # 构建应用
-RUN mvn package
+RUN mvn clean package
 
 # 使用 OpenJDK 11 作为运行环境
 FROM openjdk:11-jre-slim
@@ -28,7 +28,7 @@ COPY --from=build /app/target/count-server-1.0-SNAPSHOT.jar ./app.jar
 # 暴露应用程序端口
 EXPOSE 8080
 
-# 使用ENTRYPOINT设置基本命令
+# 运行应用
 ENTRYPOINT ["java", "-jar", "app.jar"]
 
 # 使用CMD设置默认参数，这些可以在运行容器时被覆盖

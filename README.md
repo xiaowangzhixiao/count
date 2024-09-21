@@ -53,10 +53,12 @@ Count Server 是一个基于 Java 的微服务，用于接收和存储指标数�
      --name count-server \
      -p 8080:8080 \
      -v /path/on/host/logs:/app/logs \
-     -e DB_URL=jdbc:mysql://host.docker.internal:3306/your_database \
-     -e DB_USER=your_username \
-     -e DB_PASSWORD=your_password \
-     count-server
+     count-server \
+     -Dstorage.type=jdbc \
+     -Ddb.url=jdbc:mysql://host.docker.internal:3306/your_database \
+     -Ddb.user=your_username \
+     -Ddb.password=your_password \
+
    ```
 
    命令说明：
@@ -64,9 +66,9 @@ Count Server 是一个基于 Java 的微服务，用于接收和存储指标数�
    - `--name count-server`: 为容器指定一个名称
    - `-p 8080:8080`: 将容器的 8080 端口映射到主机的 8080 端口
    - `-v /path/on/host/logs:/app/logs`: 将主机上的日志目录挂载到容器中
-   - `-e DB_URL=...`: 设置数据库 URL 环境变量
-   - `-e DB_USER=...`: 设置数据库用户名环境变量
-   - `-e DB_PASSWORD=...`: 设置数据库密码环境变量
+   - `-Ddb.url=...`: 设置数据库 URL 
+   - `-Ddb.user=...`: 设置数据库用户名
+   - `-Ddb.password=...`: 设置数据库密码
 
    注意：
    - 将 `/path/on/host/logs` 替换为你想在主机上存储日志的实际路径
@@ -75,7 +77,7 @@ Count Server 是一个基于 Java 的微服务，用于接收和存储指标数�
 
 3. 数据库配置：
 
-   应用程序使用环境变量来配置数据库连接。确保在运行容器时提供了正确的环境变量：
+   应用程序使用环境变量来配置数据库连接。确保在运行容器时提供了正确的参数：
    
    - `DB_URL`: JDBC URL，格式为 `jdbc:mysql://hostname:port/database`
    - `DB_USER`: 数据库用户名
@@ -95,10 +97,11 @@ Count Server 是一个基于 Java 的微服务，用于接收和存储指标数�
      --network count-network \
      -p 8080:8080 \
      -v /path/on/host/logs:/app/logs \
-     -e DB_URL=jdbc:mysql://mysql-container:3306/your_database \
-     -e DB_USER=your_username \
-     -e DB_PASSWORD=your_password \
-     count-server
+     count-server \
+     -Dstorage.type=jdbc \
+     -Ddb.url=jdbc:mysql://mysql-container:3306/your_database \
+     -Ddb.user=your_username \
+     -Ddb.password=your_password \
    ```
 
    这里，`mysql-container` 是你的 MySQL Docker 容器的名称。
