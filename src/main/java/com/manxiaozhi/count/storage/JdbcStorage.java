@@ -13,7 +13,8 @@ public class JdbcStorage implements Storage {
 
     public JdbcStorage(String dbUrl, String dbUser, String dbPassword) {
         HikariConfig config = new HikariConfig();
-        config.setJdbcUrl(dbUrl);
+        String urlSetting = "useLegacyDatetimeCode=false&serverTimezone=Asia/Shanghai&characterEncoding=UTF-8";
+        config.setJdbcUrl(dbUrl + "?" + urlSetting);
         config.setUsername(dbUser);
         config.setPassword(dbPassword);
         config.setMaximumPoolSize(10);
